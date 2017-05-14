@@ -10,12 +10,18 @@ import {
   Dimensions,
   AlertIOS,
   ActivityIndicator,
-  RefreshControl
+  RefreshControl,
+  TouchableOpacity
 } from 'react-native';
 
 import request from '../Common/request'
 import config from '../Common/config'
+import Detail from './Detail'
+import Item from './Item'
 var {width,height} = Dimensions.get('window');
+
+
+
 
 // 缓存的数据
 var cacheResults = {
@@ -46,7 +52,7 @@ export default class List extends Component {
     return(
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>列表页面</Text>
+          {/* <Text style={styles.headerTitle}>列表页面</Text> */}
         </View>
         <ListView
           dataSource={this.state.dataSource}
@@ -186,26 +192,23 @@ export default class List extends Component {
   // 返回每一个cell
   _renderRow(rowData) {
     return(
-      <TouchableHighlight>
-        <View style={styles.item}>
-          <Text style={styles.title}>{rowData.title}</Text>
-          <Image source={{uri: rowData.thumb}} style={styles.thumb}>
-            <Image source={{uri: 'play'}} style={styles.play}></Image>
-          </Image>
-          <View style={styles.itemFooter}>
-            <View style={styles.handleBox}>
-              <Image source={{uri: 'ios7-heart-outline'}} style={styles.up}></Image>
-              <Text style={styles.handleText}>喜欢</Text>
-            </View>
-            <View style={styles.handleBox}>
-              <Image source={{uri: 'ios7-chatbubble-outline'}} style={styles.common}></Image>
-              <Text style={styles.handleText}>评论</Text>
-            </View>
-          </View>
-        </View>
-      </TouchableHighlight>
+    <Item
+      key={rowData._id}
+      rowData={rowData}
+      onSelect={() => this._loadPage(rowData)}
+    />
     );
   }
+  // 进入详情页
+  _loadPage(rowData) {
+    
+    this.props.navigator.push({
+      title: '详情',
+      component: Detail,
+      passProps: { rowData: rowData }
+    });
+  }
+
 }
 
 const styles = StyleSheet.create({
@@ -213,9 +216,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5fcff',
   },
   header: {
-    paddingTop: 25,
-    paddingBottom: 12,
-    backgroundColor: '#ee735c',
+    height: 64,
+    backgroundColor: '#f5fcff',
 
   },
   headerTitle: {
@@ -223,65 +225,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     fontWeight: '600'
-  },
-  item:{
-    width: width,
-    marginBottom: 10,
-    backgroundColor: '#fff'
-  },
-  title:{
-    padding: 10,
-    fontSize: 18,
-    color: '#333'
-  },
-  thumb:{
-    width: width,
-    height: width*0.5,
-    resizeMode: 'cover'
-  },
-  play:{
-    position: 'absolute',
-    bottom: 14,
-    right: 14,
-    width: 46,
-    height: 46,
-    paddingTop: 9,
-    paddingLeft: 18,
-    backgroundColor: 'transparent',
-    borderColor: '#fff',
-    borderWidth: 1,
-    borderRadius: 23,
-  },
-  itemFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#eee'
-  },
-  handleBox: {
-    padding: 10,
-    flexDirection: 'row',
-    width: width*0.5 - 0.5,
-    justifyContent: 'center',
-    backgroundColor: '#fff'
-  },
-  handleText: {
-    paddingLeft: 12,
-    fontSize: 18,
-    color: '#333'
-  },
-  up: {
-    width: 23,
-    height: 23
-  },
-  common:{
-    width: 23,
-    height: 23
-  },
-  loadingMore: {
-    marginVertical: 20
-  },
-  loadingText: {
-    color: '#777',
-    textAlign: 'center'
   }
 });

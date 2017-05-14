@@ -4,7 +4,9 @@ import {
   StyleSheet,
   Text,
   View,
-  TabBarIOS
+  TabBarIOS,
+  NavigatorIOS,
+  Navigator
 } from 'react-native';
 
 import List from '../Home/List';
@@ -35,7 +37,23 @@ export default class Main extends Component {
                selectedTab: 'Home',
              });
            }}>
-           <List></List>
+           <NavigatorIOS
+             // 配置标题和组件
+             initialRoute={{
+               title: '首页',
+               component: List
+             }}
+              style={{flex: 1}}
+            //  // 配置转场方式
+             configureScene={(route) => {
+               return NavigatorIOS.SceneConfigs.FloatFromFight
+             }}
+            //  renderScene={(route, navigator) => {
+            //    var Component = route.component;
+            //    return <Component {...route.params} navigator={navigator}/>
+            //  }}
+
+           />
          </TabBarIOS.Item>
          <TabBarIOS.Item
            icon={{uri:'recording-outline.png',scale:15}}

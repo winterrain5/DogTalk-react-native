@@ -10,6 +10,9 @@ module.exports = {
   },
   api: {
     base: 'http://rapapi.org/mockjsdata/18956/',
-    home: 'api/home'
+    // 首页列表API
+    home: 'api/home',
+    // 点赞功能API
+    up: 'api/up'
   }
 }

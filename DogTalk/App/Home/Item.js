@@ -34,7 +34,10 @@ export default class Item extends Component {
         <View style={styles.item}>
           <Text style={styles.title}>{this.props.rowData.title}</Text>
           <Image source={{uri: this.props.rowData.thumb}} style={styles.thumb}>
-            <Image source={{uri: 'play'}} style={styles.play}></Image>
+            <View style={styles.play}>
+              <Image source={{uri: 'play'}} style={{width:22,height:22,alignSelf: 'center'}}></Image>
+            </View>
+
           </Image>
           <View style={styles.itemFooter}>
             <TouchableOpacity onPress={this._up.bind(this)} style={styles.handleBox}>
@@ -106,12 +109,13 @@ const styles = StyleSheet.create({
     right: 14,
     width: 44,
     height: 44,
-    paddingTop: 9,
-    paddingLeft: 18,
+    paddingLeft: 4,
     backgroundColor: 'transparent',
     borderColor: '#fff',
     borderWidth: 1,
     borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   itemFooter: {
     flexDirection: 'row',
@@ -139,11 +143,5 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22
   },
-  loadingMore: {
-    marginVertical: 20
-  },
-  loadingText: {
-    color: '#777',
-    textAlign: 'center'
-  }
+
 });

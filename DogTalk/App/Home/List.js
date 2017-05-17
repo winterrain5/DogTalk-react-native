@@ -20,9 +20,6 @@ import Detail from './Detail'
 import Item from './Item'
 var {width,height} = Dimensions.get('window');
 
-
-
-
 // 缓存的数据
 var cacheResults = {
   nextPage: 1,
@@ -55,16 +52,16 @@ export default class List extends Component {
           {/* <Text style={styles.headerTitle}>列表页面</Text> */}
         </View>
         <ListView
+          style={{marginBottom: 90}}
           dataSource={this.state.dataSource}
           renderRow={this._renderRow.bind(this)}
           renderFooter={this._rederFooter.bind(this)}
-          automaticallyAdjustContentInsets={false}
-          style={{marginBottom: 90}}
           // 滚动到底部触发的操作
           onEndReached={this._fetchMoreData.bind(this)}
           // 预加载 距离底部多少像素的时候预加载
           onEndReachedThreshold={20}
           showsVerticalScrollIndicator={false}
+          automaticallyAdjustContentInsets={false}
           refreshControl={
           <RefreshControl
             refreshing={this.state.isRefreshing}
@@ -201,7 +198,7 @@ export default class List extends Component {
   }
   // 进入详情页
   _loadPage(rowData) {
-    
+
     this.props.navigator.push({
       title: '详情',
       component: Detail,
@@ -225,5 +222,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     fontWeight: '600'
+  },
+  loadingMore: {
+    marginVertical: 20
+  },
+  loadingText: {
+    color: '#777',
+    textAlign: 'center'
   }
 });

@@ -12,13 +12,14 @@ import {
 import List from '../Home/List';
 import Edit from '../Edit/Edit';
 import Accout from '../Account/Account';
+import Login from '../Account/Login'
 
 
 export default class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedTab: 'Home'
+      selectedTab: 'acount'
     };
   }
   render() {
@@ -77,7 +78,7 @@ export default class Main extends Component {
                selectedTab: 'acount',
              });
            }}>
-           <Accout/>
+           <Login/>
          </TabBarIOS.Item>
        </TabBarIOS>
     );

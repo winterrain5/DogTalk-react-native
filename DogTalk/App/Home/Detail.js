@@ -59,6 +59,8 @@ export default class Detail extends Component{
       // modal
       animationType: 'none', // modal动画类型
       modalVisible: false, // modal是否可见
+
+      keyboardShow: false
     };
   }
   render() {
@@ -156,8 +158,6 @@ export default class Detail extends Component{
                   placeholder="留下精彩评论<..."
                   style={styles.content}
                   multiline={true}
-                  // onFocus={this._focus.bind(this)}
-                  // onBlur={this._onBlur.bind(this)}
                   defaultValue={this.state.content}
                   onChangeText={(text) => {
                     this.setState({
@@ -169,6 +169,23 @@ export default class Detail extends Component{
             <Button style={styles.submitButton} onPress={this._submit.bind(this)}>提交评论</Button>
             </View>
           </Modal>
+          <View style={[styles.inputContainer,{bottom: this.state.keyboardShow ? 250 : 0}]}>
+            <TextInput
+              placeholder='留下精彩评论'
+              style={styles.textInput}
+              onFocus={this._focus.bind(this)}
+              onBlur={this._onBlur.bind(this)}
+              defaultValue={this.state.content}
+              returnKeyType='send'
+              enablesReturnKeyAutomatically={true}
+              onSubmitEditing={this._onSubmitEditing.bind(this)}
+              onChangeText={(text) => {
+                this.setState({
+                  content: text
+                });
+              }}
+            />
+          </View>
       </View>
     );
   }
@@ -265,15 +282,6 @@ export default class Detail extends Component{
   _renderHeader() {
     return(
       <View style={styles.listHeader}>
-        {/* 评论框 */}
-        <View style={styles.commentBox}>
-          <TextInput
-            placeholder="留下精彩评论<..."
-            style={styles.content}
-            multiline={true}
-            onFocus={this._focus.bind(this)}
-          />
-        </View>
         <Text style={styles.listHeaderText}>最新热评</Text>
       </View>
     );
@@ -358,8 +366,22 @@ export default class Detail extends Component{
   }
   // 评论框获取焦点时
   _focus() {
-    this._setModalVisible(true);
+    this.setState({
+      keyboardShow: true
+    });
   }
+  // 评论框失去焦点
+  _onBlur() {
+    this.setState({
+      keyboardShow: false
+    });
+  }
+
+  // 提交表单
+  _onSubmitEditing(){
+    this._submit();
+  }
+
   // 控制modal是否可见
   _setModalVisible(isVisible) {
     this.setState({
@@ -374,9 +396,6 @@ export default class Detail extends Component{
 
   // 提交评论表单
   _submit() {
-    // 评论时暂停播放
-    this._pause();
-
     if (!this.state.content) {
         alert('评论内容不能为空！');
         return
@@ -417,7 +436,8 @@ export default class Detail extends Component{
           cacheResults.total = cacheResults.total + 1;
           this.setState({
             isSending: false,
-            dataSource: this.state.dataSource.cloneWithRows(cacheResults.items)
+            dataSource: this.state.dataSource.cloneWithRows(cacheResults.items),
+            content: ''
           });
           this._setModalVisible(false);
         }
@@ -603,5 +623,22 @@ const styles = StyleSheet.create({
     color: '#ee735c',
     fontSize: 18,
     height: 40,
+  },
+  inputContainer: {
+    position :'absolute',
+    height: 50,
+    width: width,
+    backgroundColor: '#fff'
+  },
+  textInput: {
+    height: 35,
+    margin:5,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 3,
+    fontSize: 15,
+    justifyContent: 'center',
+    color: '#333',
+    paddingLeft: 5
   }
 });

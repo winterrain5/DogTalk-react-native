@@ -12,11 +12,15 @@
     "react": "16.0.0-alpha.6",
     "react-native": "0.44.0",
     "react-native-button": "^1.8.2",
+    "react-native-countdown": "0.0.3",
     "react-native-deprecated-custom-components": "^0.1.0",
+    "react-native-image-picker": "^0.26.3",
+    "react-native-progress": "^3.2.1",
     "react-native-sk-countdown": "^1.0.1",
     "react-native-vector-icons": "^4.1.1",
     "react-native-video": "^1.0.0",
-    "react-timer-mixin": "^0.13.3"
+    "react-timer-mixin": "^0.13.3",
+    "sha1": "^1.1.1"
   },
   "devDependencies": {
     "babel-jest": "20.0.1",

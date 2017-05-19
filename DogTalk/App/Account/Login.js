@@ -6,7 +6,8 @@ import {
   View,
   TextInput,
   AlertIOS,
-  Dimensions
+  Dimensions,
+  Keyboard
 } from 'react-native';
 
 import Button from 'react-native-button'
@@ -15,9 +16,12 @@ import config from '../Common/config'
 
 var TimerMixin = require('react-timer-mixin');
 var {width,height} = Dimensions.get('window');
-
+var codeTime = 60;
 export default class Login extends Component {
   mixins: [TimerMixin]
+  static defaultProps = {
+    afterLogin: null
+  };
   constructor(props) {
     super(props);
     this.state = {
@@ -25,8 +29,11 @@ export default class Login extends Component {
       codeSend: false,
       verifyCode: '',
       countingDone: false,
-      sec: '60'
+      timerCount: codeTime,
+      timerTitle:'60s重新获取',
+      disabled: false
     };
+
   }
   render() {
     return(
@@ -65,7 +72,7 @@ export default class Login extends Component {
               {
                 this.state.countingDone ?
                 <Button style={styles.countBtn} onPress={this._sendVerifyCode.bind(this)}>获取验证码</Button>
-                : <Button style={styles.countBtn} onPress={this._sendVerifyCode.bind(this)}>{this.state.sec}s重新获取</Button>
+                : <Button style={styles.countBtn} onPress={this._sendVerifyCode.bind(this)}>{this.state.timerTitle}</Button>
               }
             </View>
             : null
@@ -79,17 +86,70 @@ export default class Login extends Component {
       </View>
     );
   }
+  /************************************/
+  componentWillUnmount() {
+    this.interval&&clearInterval(this.interval);
+  }
 
   /************************************/
   // 事件
   // 登录
   _submit() {
+    // 隐藏键盘
+    Keyboard.dismiss();
+    var phoneNumber = this.state.phoneNumber;
+    var verifyCode = this.state.verifyCode;
+    if (!phoneNumber) {
+      alert('手机号码不能为空');
+      return;
+    }
 
+    if (!verifyCode) {
+      alert('验证码不能为空');
+      return;
+    }
+
+    var body = {
+      phoneNumber: phoneNumber,
+      verifyCode: verifyCode
+    };
+
+    var url = config.api.base + config.api.verify;
+    console.log(url);
+    request.post(url,body)
+      .then((data) => {
+        if (data && data.success) {
+          this.props.afterLogin(data.data);
+        }
+      })
+      .catch((err) => {
+
+        console.error(err);
+      })
   }
+
+  // 开启定时器
+  _startTimer() {
+    this.interval=setInterval(() =>{
+      var timer=this.state.timerCount-1
+      if(timer===0){
+        this.interval&&clearInterval(this.interval);
+        this.setState({
+          timerCount:codeTime,
+          timerTitle:'获取验证码'
+        })
+      }else{
+        this.setState({
+          timerCount:timer,
+          timerTitle:timer+'s重新获取'
+        })
+      }
+    },1000)
+  }
+
   // 发送验证码
   _sendVerifyCode() {
-
-
+    this._startTimer();
     var phoneNumber = this.state.phoneNumber;
     if (!phoneNumber) {
       alert('手机号码不能为空');
@@ -179,7 +239,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     color: '#ee735c',
     textAlign: 'center',
-    fontSize: 13
+    fontSize: 14
   }
 
 

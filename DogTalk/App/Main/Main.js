@@ -6,7 +6,8 @@ import {
   View,
   TabBarIOS,
   NavigatorIOS,
-  Navigator
+  Navigator,
+  AsyncStorage
 } from 'react-native';
 
 import List from '../Home/List';
@@ -19,10 +20,51 @@ export default class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedTab: 'acount'
+      selectedTab: 'Home',
+      logined: false,
+      user: null
     };
   }
+
+  componentDidMount() {
+      this._asyncAppStatus();
+  }
+
+  _asyncAppStatus() {
+    // 取出用户数据
+    AsyncStorage.getItem('user')
+      .then((data) => {
+        var user;
+        var newState = {};
+        if (data) {
+          user = JSON.parse(data)
+        }
+        if (user && user.accessToken) {
+          newState.user = user;
+          newState.logined = true;
+        } else {
+          newState.logined = false;
+        }
+
+        this.setState(newState);
+      })
+  }
+  // 登录成功后的回调函数
+  _afterLogin(data) {
+    var user = JSON.stringify(data)
+    AsyncStorage.setItem('user',user)
+      .then((data) => {
+        this.setState({
+          logined: true,
+          user: user
+        });
+      })
+  }
+
   render() {
+    if (!this.state.logined) {
+      return <Login afterLogin={this._afterLogin.bind(this)}/>
+    }
     return (
       <TabBarIOS
         tintColor="#ee735c"
@@ -45,15 +87,6 @@ export default class Main extends Component {
                component: List
              }}
               style={{flex: 1}}
-            //  // 配置转场方式
-             configureScene={(route) => {
-               return NavigatorIOS.SceneConfigs.FloatFromFight
-             }}
-            //  renderScene={(route, navigator) => {
-            //    var Component = route.component;
-            //    return <Component {...route.params} navigator={navigator}/>
-            //  }}
-
            />
          </TabBarIOS.Item>
          <TabBarIOS.Item
@@ -78,7 +111,14 @@ export default class Main extends Component {
                selectedTab: 'acount',
              });
            }}>
-           <Login/>
+           <NavigatorIOS
+             // 配置标题和组件
+             initialRoute={{
+               title: '账户',
+               component: Accout
+             }}
+              style={{flex: 1}}
+           />
          </TabBarIOS.Item>
        </TabBarIOS>
     );

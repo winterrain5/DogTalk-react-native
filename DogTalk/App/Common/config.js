@@ -26,5 +26,9 @@ module.exports = {
     // 登录
     signup: 'api/u/signup',
     verify: 'api/u/verify',
+
+    /*******************************/
+    // 签名
+    signature: 'api/signature'
   }
 }

@@ -26,6 +26,7 @@ module.exports = {
     // 登录
     signup: 'api/u/signup',
     verify: 'api/u/verify',
+    update: 'api/u/update',
 
     /*******************************/
     // 签名

@@ -7,7 +7,8 @@ import {
   TabBarIOS,
   NavigatorIOS,
   Navigator,
-  AsyncStorage
+  AsyncStorage,
+  AlertIOS
 } from 'react-native';
 
 import List from '../Home/List';
@@ -60,6 +61,15 @@ export default class Main extends Component {
         });
       })
   }
+  // 登出
+  _logout() {
+    AsyncStorage.removeItem('user',() => {
+      this.setState({
+        logined: false,
+        user: null
+      })
+    })
+  }
 
   render() {
     if (!this.state.logined) {
@@ -86,7 +96,12 @@ export default class Main extends Component {
                title: '首页',
                component: List
              }}
-              style={{flex: 1}}
+             barTintColor='#ee735c'
+             style={{flex: 1}}
+             tintColor='#fff'
+             titleTextColor='#fff'
+             translucen={true}
+             shadowHidden={true}
            />
          </TabBarIOS.Item>
          <TabBarIOS.Item
@@ -111,13 +126,9 @@ export default class Main extends Component {
                selectedTab: 'acount',
              });
            }}>
-           <NavigatorIOS
-             // 配置标题和组件
-             initialRoute={{
-               title: '账户',
-               component: Accout
-             }}
-              style={{flex: 1}}
+           <Accout
+             logout={this._logout.bind(this)}
+             user={this.state.user}
            />
          </TabBarIOS.Item>
        </TabBarIOS>
